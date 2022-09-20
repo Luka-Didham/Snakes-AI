@@ -9,7 +9,7 @@ import copy as cp
 agentName = "<SmartSnake>"
 perceptFieldOfVision = 3  # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
-trainingSchedule = [("random", 50)]
+trainingSchedule = [("random", 50), ("self", 50)]
 #trainingSchedule = None
 
 # This is the class for your snake/agent
@@ -23,7 +23,7 @@ class Snake:
         self.actions = actions
         self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
         for c in range(self.nPercepts):
-            self.chromosome.append(np.random.uniform(-1, 1, 3)) #inner variable chromosome values for each action (left, straight, right)
+            self.chromosome.append(np.random.uniform(-2, 2, 3)) #inner variable chromosome values for each action (left, straight, right)
 
 
     def AgentFunction(self, percepts):
@@ -59,7 +59,8 @@ class Snake:
             for a in range(len(array)):  # each individual chromosome value for each nested array relating to each action
                 # print(percepts_flatten[c])
                 # print(array[a])
-                actions[a] = actions[a] + percepts_flatten[c] * array[a] * random.uniform(-1,1)
+                # print(actions[a])
+                actions[a] = actions[a] + percepts_flatten[c] * array[a] + random.uniform(-0.5,0.5)
 
 
         return self.actions[np.argmax(actions)]
@@ -185,6 +186,7 @@ def newGeneration(old_population):
                     c[chromosome_counter] = p1[chromosome_counter]
                 else:  # take parent2 chromosome
                     c[chromosome_counter] = p2[chromosome_counter]
+        child.chromosome = child_chromosome
         # print("\n")
         # print(parent1.chromosome)
         # print("\n")
@@ -192,11 +194,11 @@ def newGeneration(old_population):
         # print("\n")
         # print(child.chromosome)
         # print("\n")
-        # child.chromosome = child_chromosome
+
         # print(child.chromosome)
         # print("\n")
         new_population.append(child)
-
+    return (new_population, avg_fitness)
 
 
 
@@ -214,7 +216,7 @@ def newGeneration(old_population):
 
 
 
-    return (new_population, avg_fitness)
+
 
 
 
