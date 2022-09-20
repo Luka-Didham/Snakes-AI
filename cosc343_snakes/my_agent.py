@@ -21,43 +21,49 @@ class Snake:
         # values)
         self.nPercepts = nPercepts
         self.actions = actions
-        self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
+        self.chromosome = []  # list of chromosomes holding [x,x,x] values representing each action
         for c in range(self.nPercepts):
-            self.chromosome.append(np.random.uniform(-1, 1, 3)) #inner variable chromosome values for each action (left, straight, right)
+            self.chromosome[c] = np.random.uniform(-1, 1, 3)
 
 
+def AgentFunction(self, percepts):
+    # You should implement a model here that translates from 'percepts' to 'actions'
+    # through 'self.chromosome'.
+    #
+    # The 'actions' variable must be returned and it must be a 3-item list or 3-dim numpy vector
+    #
+    # The index of the largest numbers in the 'actions' vector/list is the action taken
+    # with the following interpretation:
+    # 0 - move left
+    # 1 - move forward
+    # 2 - move right
+    #
+    actions = [0.0, 0.0, 0.0]
 
-    def AgentFunction(self, percepts):
+    chomosome_split = np.array_split(self.chromosome, 3)
+    percepts_flatten = percepts.flatten()
+    #
+    # Different 'percepts' values should lead to different 'actions'.  This way the agent
+    # reacts differently to different situations.
+    #
+    # Different 'self.chromosome' should lead to different 'actions'.  This way different
+    # agents can exhibit different behaviour.
 
+    # .
+    # .
+    # .
+    # # agents can exhibit different behaviour.
+    count = 0
+    while (count < 3):
+        for c in chomosome_split[count]:
+            for x in percepts_flatten:
+                actions[count] = actions[count] + c * x
+        actions[count] = actions[count]  # + random.uniform(0,1*perceptFieldOfVision) #random bias
+        count = count + 1
 
-        # You should implement a model here that translates from 'percepts' to 'actions'
-        # through 'self.chromosome'.
-        #
-        # The 'actions' variable must be returned and it must be a 3-item list or 3-dim numpy vector
-
-        #
-        # The index of the largest numbers in the 'actions' vector/list is the action taken
-        # with the following interpretation:
-        # 0 - move left
-        # 1 - move forward
-        # 2 - move right
-        actions = [0.0,0.0,0.0]
-        percepts_flatten = percepts.flatten()
-        #
-        # Different 'percepts' values should lead to different 'actions'.  This way the agent
-        # reacts differently to different situations.
-        #
-        # Different 'self.chromosome' should lead to different 'actions'.  This way different
-        # # agents can exhibit different behaviour.
-
-        for c in self.chromosome:  # each individual nested array
-            for x in percepts_flatten:  # each percept value -1,1,0,2
-                for a in c:  # each individual chromosome value for each nested array relating to each action
-                    print(x)
-                    print(np.where(a))
-                    actions[np.where(a)] = actions[np.where(a)] + a * x
-
-        return self.actions[np.argmax(actions)]
+    index = np.random.randint(low=0, high=len(self.actions))
+    return self.actions[index]
+    return self.actions[np.argmax(actions)]
 
 def evalFitness(population):
 
