@@ -9,8 +9,8 @@ import copy as cp
 agentName = "<SmartSnake>"
 perceptFieldOfVision = 3  # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
-#trainingSchedule = [("self", 10), ("random", 10)]
-trainingSchedule = None
+trainingSchedule = [("random", 50)]
+#trainingSchedule = None
 
 # This is the class for your snake/agent
 class Snake:
@@ -21,49 +21,48 @@ class Snake:
         # values)
         self.nPercepts = nPercepts
         self.actions = actions
-        self.chromosome = []  # list of chromosomes holding [x,x,x] values representing each action
+        self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
         for c in range(self.nPercepts):
-            self.chromosome[c] = np.random.uniform(-1, 1, 3)
+            self.chromosome.append(np.random.uniform(-1, 1, 3)) #inner variable chromosome values for each action (left, straight, right)
 
 
-def AgentFunction(self, percepts):
-    # You should implement a model here that translates from 'percepts' to 'actions'
-    # through 'self.chromosome'.
-    #
-    # The 'actions' variable must be returned and it must be a 3-item list or 3-dim numpy vector
-    #
-    # The index of the largest numbers in the 'actions' vector/list is the action taken
-    # with the following interpretation:
-    # 0 - move left
-    # 1 - move forward
-    # 2 - move right
-    #
-    actions = [0.0, 0.0, 0.0]
+    def AgentFunction(self, percepts):
 
-    chomosome_split = np.array_split(self.chromosome, 3)
-    percepts_flatten = percepts.flatten()
-    #
-    # Different 'percepts' values should lead to different 'actions'.  This way the agent
-    # reacts differently to different situations.
-    #
-    # Different 'self.chromosome' should lead to different 'actions'.  This way different
-    # agents can exhibit different behaviour.
 
-    # .
-    # .
-    # .
-    # # agents can exhibit different behaviour.
-    count = 0
-    while (count < 3):
-        for c in chomosome_split[count]:
-            for x in percepts_flatten:
-                actions[count] = actions[count] + c * x
-        actions[count] = actions[count]  # + random.uniform(0,1*perceptFieldOfVision) #random bias
-        count = count + 1
+        # You should implement a model here that translates from 'percepts' to 'actions'
+        # through 'self.chromosome'.
+        #
+        # The 'actions' variable must be returned and it must be a 3-item list or 3-dim numpy vector
 
-    index = np.random.randint(low=0, high=len(self.actions))
-    return self.actions[index]
-    return self.actions[np.argmax(actions)]
+        #
+        # The index of the largest numbers in the 'actions' vector/list is the action taken
+        # with the following interpretation:
+        # 0 - move left
+        # 1 - move forward
+        # 2 - move right
+        actions = [0.0,0.0,0.0]
+        percepts_flatten = percepts.flatten()
+        #
+        # Different 'percepts' values should lead to different 'actions'.  This way the agent
+        # reacts differently to different situations.
+        #
+        # Different 'self.chromosome' should lead to different 'actions'.  This way different
+        # # agents can exhibit different behaviour.
+        for c in range(len(self.chromosome)):  # each individual nested array
+            array = self.chromosome[c]
+            # print(self.chromosome)
+            # print("\n")
+            # print(percepts)
+            # print("\n")
+            # print(c)
+            # print("\n")
+            for a in range(len(array)):  # each individual chromosome value for each nested array relating to each action
+                # print(percepts_flatten[c])
+                # print(array[a])
+                actions[a] = actions[a] + percepts_flatten[c] * array[a] * random.uniform(-1,1)
+
+
+        return self.actions[np.argmax(actions)]
 
 def evalFitness(population):
 
@@ -145,8 +144,9 @@ def newGeneration(old_population):
         normalised_snakes[c] = sum/sum_fitness
 
 
-
-    while(len(new_population)<N): #start doing roulette wheel breeding
+    # keep selecting until next generation full
+    while(len(new_population)<N):
+        #start doing roulette wheel breeding
         rand1 = random.uniform(0,1)
         rand2 = random.uniform(0,1)
         parent1_set = False
@@ -154,12 +154,12 @@ def newGeneration(old_population):
         parent1 = Snake(nPercepts, actions)
         parent2 = Snake(nPercepts, actions)
         child = Snake(nPercepts, actions)
-        child_chromosome = np.zeros(nPercepts*3)
-        mutation = 0.05
+        child_chromosome = []  # list of child chromosomes holding [x,x,x] values representing each action
+        for c in range(nPercepts):
+            child_chromosome.append(np.random.uniform(-1, 1, 3))  # inner variable chromosome values for each action (left, straight, right)
+        mutation = 0.01
 
         for c in range(N-1):
-            print(len(old_population))
-            print(N)
             if (not parent1_set):
                 if(rand1<normalised_snakes[c]):
                     parent1 = old_population[c]
@@ -170,17 +170,31 @@ def newGeneration(old_population):
                     parent2_set = True
             if(parent1_set and parent2_set):
                 break
-            #got parents now do cross over
 
-        for c in range(len(child_chromosome)/3):
-            rand = random.uniform(0, 1.05)
-            if rand < mutation:  # do random mutation
-                child_chromosome[c] = random.uniform(-1, 1)
-            elif rand < 0.55:  # take parent1 chromosome
-                child_chromosome[c] = parent1.chromosome[c]
-            else:  # take parent2 chromosome
-                child_chromosome[c] = parent2.chromosome[c]
-        child.chromosome = child_chromosome
+        #got parents now do cross over
+
+        for array_counter in range(len(child_chromosome)): #loop for each inner array in child and parents
+            c = child_chromosome[array_counter]
+            p1 = parent1.chromosome[array_counter]
+            p2 = parent2.chromosome[array_counter]
+            for chromosome_counter in range(len(child_chromosome[array_counter])):  # loop for each chromosome value in inner array
+                rand = random.uniform(0, 1.05)
+                if rand < mutation:  # do random mutation
+                    c[chromosome_counter] = random.uniform(-1, 1)
+                elif rand < 0.55:  # take parent1 chromosome
+                    c[chromosome_counter] = p1[chromosome_counter]
+                else:  # take parent2 chromosome
+                    c[chromosome_counter] = p2[chromosome_counter]
+        # print("\n")
+        # print(parent1.chromosome)
+        # print("\n")
+        # print(parent2.chromosome)
+        # print("\n")
+        # print(child.chromosome)
+        # print("\n")
+        # child.chromosome = child_chromosome
+        # print(child.chromosome)
+        # print("\n")
         new_population.append(child)
 
 
@@ -201,7 +215,6 @@ def newGeneration(old_population):
 
 
     return (new_population, avg_fitness)
-
 
 
 
