@@ -23,7 +23,7 @@ class Snake:
         self.actions = actions
         self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
         for c in range(self.nPercepts):
-            self.chromosome.append(np.random.uniform(-2, 2, 3)) #inner variable chromosome values for each action (left, straight, right)
+            self.chromosome.append(np.random.uniform(-1 ,1, 3)) #inner variable chromosome values for each action (left, straight, right)
 
 
     def AgentFunction(self, percepts):
@@ -56,11 +56,12 @@ class Snake:
             # print("\n")
             # print(c)
             # print("\n")
+            #print(array)
             for a in range(len(array)):  # each individual chromosome value for each nested array relating to each action
                 # print(percepts_flatten[c])
                 # print(array[a])
                 # print(actions[a])
-                actions[a] = actions[a] + percepts_flatten[c] * array[a] + random.uniform(-0.5,0.5)
+                actions[a] = actions[a] + percepts_flatten[c] * array[a] + random.uniform(-1, 1)
 
 
         return self.actions[np.argmax(actions)]
@@ -155,11 +156,9 @@ def newGeneration(old_population):
         parent1 = Snake(nPercepts, actions)
         parent2 = Snake(nPercepts, actions)
         child = Snake(nPercepts, actions)
-        child_chromosome = []  # list of child chromosomes holding [x,x,x] values representing each action
-        for c in range(nPercepts):
-            child_chromosome.append(np.random.uniform(-1, 1, 3))  # inner variable chromosome values for each action (left, straight, right)
         mutation = 0.01
 
+        #picking parents
         for c in range(N-1):
             if (not parent1_set):
                 if(rand1<normalised_snakes[c]):
@@ -174,19 +173,23 @@ def newGeneration(old_population):
 
         #got parents now do cross over
 
-        for array_counter in range(len(child_chromosome)): #loop for each inner array in child and parents
-            c = child_chromosome[array_counter]
-            p1 = parent1.chromosome[array_counter]
-            p2 = parent2.chromosome[array_counter]
-            for chromosome_counter in range(len(child_chromosome[array_counter])):  # loop for each chromosome value in inner array
-                rand = random.uniform(0, 1.05)
-                if rand < mutation:  # do random mutation
-                    c[chromosome_counter] = random.uniform(-1, 1)
-                elif rand < 0.55:  # take parent1 chromosome
-                    c[chromosome_counter] = p1[chromosome_counter]
-                else:  # take parent2 chromosome
-                    c[chromosome_counter] = p2[chromosome_counter]
-        child.chromosome = child_chromosome
+        for action_counter in range(3): #loop for each action
+            rand = random.uniform(0, 1.00)
+            # if rand < mutation:  # do random mutation
+            #     child.chromosome[array_counter] = random.uniform(-1, 1)
+            if rand < 0.5:  # take parent1 chromosome of specific action
+                for chromo_counter in range(len(child.chromosome)):
+                    child_chromo = child.chromosome[chromo_counter]
+                    p1_chromo = parent1.chromosome[chromo_counter]
+                    child_chromo[action_counter] = p1_chromo[action_counter]
+                    child.chromosome[chromo_counter] = child_chromo
+            else:  # take parent2 chromosome of specific action
+                for chromo_counter in range(len(child.chromosome)):
+                    child_chromo = child.chromosome[chromo_counter]
+                    p2_chromo = parent2.chromosome[chromo_counter]
+                    child_chromo[action_counter] = p2_chromo[action_counter]
+                    child.chromosome[chromo_counter] = child_chromo
+        #still getting 4s
         # print("\n")
         # print(parent1.chromosome)
         # print("\n")
