@@ -8,10 +8,10 @@ __date__ = "August 2022"
 game_settings = {
 
    #File implementing the agent playing as player 1
-   "player1": "random_agent.py",
+   "player1": "my_agent.py",
 
    # File implementing the agent playing as player 2
-   #"player2": "random_agent.py",
+   "player2": "random_agent.py",
 
    # Size of the game grid
    "gridSize": 50,
@@ -23,7 +23,7 @@ game_settings = {
    "nTurns": 100,
 
    # Speed of visualisation ('slow','normal','fast')
-   "visSpeed": 'normal',
+   "visSpeed": 'fast',
 
    # Visualisation resolution
    "visResolution": (720, 480),
