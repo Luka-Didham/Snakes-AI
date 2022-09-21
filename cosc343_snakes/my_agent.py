@@ -228,4 +228,3 @@ def newGeneration(old_population):
 
 
 
-
