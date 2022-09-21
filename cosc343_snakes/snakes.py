@@ -515,6 +515,7 @@ class Player:
 
 class SnakePlay:
 
+
     def __init__(self,game,showGame=None,saveGame=False):
         self.game = game
         self.map = np.zeros((self.game.gridSize, self.game.gridSize), dtype='int8')
@@ -525,7 +526,9 @@ class SnakePlay:
             self.vis_map = np.zeros((self.game.gridSize, self.game.gridSize, 3, self.game.nTurns+1), dtype='int8')
         elif self.showGame is not None:
             self.vis_map = np.zeros((self.game.gridSize, self.game.gridSize, 3, 1), dtype='int8')
-
+    #TEMP
+    with open('avg_fitness.txt', 'w') as f:
+        f.write("")
 
     def vis_update(self,i,players,food):
 

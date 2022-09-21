@@ -9,7 +9,7 @@ for line in open('avg_fitness.txt', 'r'):
     y.append(float(line))
     x.append(count)
 
-plt.title("Fitness")
+plt.title("Fitness per Game")
 plt.xlabel('training game')
 plt.ylabel("average fitness")
 plt.plot(x, y, marker='o', c='g')

@@ -10,7 +10,7 @@ agentName = "SmartSnake"
 perceptFieldOfVision = 3   # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
 trainingSchedule = [("random", 10)]
-#trainingSchedule = None
+# trainingSchedule = None
 
 # This is the class for your snake/agent
 class Snake:
@@ -25,7 +25,7 @@ class Snake:
         self.bias = np.random.uniform(-50 ,50, 3)
         self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action [left, straight, right]
         for c in range(self.nPercepts): #filling each value within each chromosome.
-            # Found wide ranfe of chromosomes makes better results
+            # Found wide range of chromosomes makes better results
             self.chromosome.append(np.random.uniform(-50 ,50, 3)) #inner variable chromosome values for each action (left, straight, right).
 
 
@@ -73,6 +73,7 @@ def evalFitness(population):
     # This loop iterates over your agents in the old population - the purpose of this boiler plate
     # code is to demonstrate how to fetch information from the old_population in order
     # to score fitness of each agent
+
     for n, snake in enumerate(population):
         # snake is an instance of Snake class that you implemented above, therefore you can access any attributes
         # (such as `self.chromosome').  Additionally, the object has the following attributes provided by the
@@ -90,8 +91,8 @@ def evalFitness(population):
         # lasted for.  It should be a reasonable fitness function, though you're free
         # to augment it with information from other stats as well
         fitness[n] = maxSize + turnsAlive / maxTurns
-        with open('avg_fitness.txt', 'w') as f:
-            f.write(str(fitness[n]))
+
+
     return fitness
 
 
@@ -112,6 +113,10 @@ def newGeneration(old_population):
     avg_fitness = np.mean(fitness)
     sum_fitness = np.sum(fitness)
 
+    #temp files to write TEMP
+    with open('avg_fitness.txt', 'a') as f:
+        f.write(str(avg_fitness))
+        f.write("\n")
     # At this point you should sort the old_population snakes according to fitness, setting it up for parent
     # selection.
 
