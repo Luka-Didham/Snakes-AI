@@ -90,6 +90,8 @@ def evalFitness(population):
         # lasted for.  It should be a reasonable fitness function, though you're free
         # to augment it with information from other stats as well
         fitness[n] = maxSize + turnsAlive / maxTurns
+        with open('avg_fitness.txt', 'w') as f:
+            f.write(str(fitness[n]))
     return fitness
 
 
