@@ -7,7 +7,7 @@ import random
 import copy as cp
 
 agentName = "<SmartSnake>"
-perceptFieldOfVision = 3  # Choose either 3,5,7 or 9
+perceptFieldOfVision = 3   # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
 trainingSchedule = [("random", 100)]
 #trainingSchedule = None
