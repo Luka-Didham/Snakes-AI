@@ -9,7 +9,7 @@ import copy as cp
 agentName = "<SmartSnake>"
 perceptFieldOfVision = 3  # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
-trainingSchedule = [("random", 50), ("self", 50)]
+trainingSchedule = [("random", 300), ("self", 50)]
 #trainingSchedule = None
 
 # This is the class for your snake/agent
@@ -23,7 +23,7 @@ class Snake:
         self.actions = actions
         self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
         for c in range(self.nPercepts):
-            self.chromosome.append(np.random.uniform(-1 ,1, 3)) #inner variable chromosome values for each action (left, straight, right)
+            self.chromosome.append(np.random.uniform(-20 ,20, 3)) #inner variable chromosome values for each action (left, straight, right)
 
 
     def AgentFunction(self, percepts):
@@ -42,6 +42,13 @@ class Snake:
         # 2 - move right
         actions = [0.0,0.0,0.0]
         percepts_flatten = percepts.flatten()
+        for p in range(len(percepts_flatten)):
+            if(percepts_flatten[p]==2):
+                percepts_flatten[p] = percepts_flatten[p]*3
+            if (percepts_flatten[p] == 1):
+                percepts_flatten[p] = percepts_flatten[p] * -3
+            if (percepts_flatten[p] == -1):
+                percepts_flatten[p] = percepts_flatten[p] * 3
         #
         # Different 'percepts' values should lead to different 'actions'.  This way the agent
         # reacts differently to different situations.
@@ -61,7 +68,7 @@ class Snake:
                 # print(percepts_flatten[c])
                 # print(array[a])
                 # print(actions[a])
-                actions[a] = actions[a] + percepts_flatten[c] * array[a] + random.uniform(-1, 1)
+                actions[a] = actions[a] + percepts_flatten[c] * array[a] + random.uniform(-20, 20)
 
 
         return self.actions[np.argmax(actions)]
