@@ -9,32 +9,31 @@ import copy as cp
 agentName = "SmartSnake"
 perceptFieldOfVision = 3   # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
-trainingSchedule = [("random", 100)]
+trainingSchedule = [("random", 10)]
 #trainingSchedule = None
 
 # This is the class for your snake/agent
 class Snake:
 
+    # This is the init method which sets up a random new Snake. Each Snake is intially set with random values for its
+    # chromosomes. After creation of the snakes the chromosomes are over written with parents chromosomes when applicable.
+    # The structure of the chromosomes is an array as large as percepts and each chromosome is now a [3x1] inner array
+    # representing each action [left, straight, right]. Bias is also set and stored so can be passed on to children snakes.
     def __init__(self, nPercepts, actions):
-        # You should initialise self.chromosome member variable here (whatever you choose it
-        # to be - a list/vector/matrix of numbers - and initialise it with some random
-        # values)
         self.nPercepts = nPercepts
         self.actions = actions
         self.bias = np.random.uniform(-50 ,50, 3)
-        self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
-        for c in range(self.nPercepts):
-            self.chromosome.append(np.random.uniform(-50 ,50, 3)) #inner variable chromosome values for each action (left, straight, right)
+        self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action [left, straight, right]
+        for c in range(self.nPercepts): #filling each value within each chromosome.
+            # Found wide ranfe of chromosomes makes better results
+            self.chromosome.append(np.random.uniform(-50 ,50, 3)) #inner variable chromosome values for each action (left, straight, right).
 
 
     def AgentFunction(self, percepts):
-
-
         # You should implement a model here that translates from 'percepts' to 'actions'
         # through 'self.chromosome'.
         #
         # The 'actions' variable must be returned and it must be a 3-item list or 3-dim numpy vector
-
         #
         # The index of the largest numbers in the 'actions' vector/list is the action taken
         # with the following interpretation:
@@ -45,11 +44,11 @@ class Snake:
         percepts_flatten = percepts.flatten()
         for p in range(len(percepts_flatten)):
             if(percepts_flatten[p]==2):
-                percepts_flatten[p] = percepts_flatten[p] * 10
+                percepts_flatten[p] = percepts_flatten[p] * 10 #Weighting food very positivly
             if (percepts_flatten[p] == 1):
-                percepts_flatten[p] = percepts_flatten[p] * -10
+                percepts_flatten[p] = percepts_flatten[p] * -10 #Weighting self negativly
             if (percepts_flatten[p] == -1):
-                percepts_flatten[p] = percepts_flatten[p] * 10
+                percepts_flatten[p] = percepts_flatten[p] * 10 #Weighting enemys negativly
         #
         # Different 'percepts' values should lead to different 'actions'.  This way the agent
         # reacts differently to different situations.
@@ -58,21 +57,11 @@ class Snake:
         # # agents can exhibit different behaviour.
         for c in range(len(self.chromosome)):  # each individual nested array
             array = self.chromosome[c]
-            # print(self.chromosome)
-            # print("\n")
-            # print(percepts)
-            # print("\n")
-            # print(c)
-            # print("\n")
-            #print(array)
             for a in range(len(array)):  # each individual chromosome value for each nested array relating to each action
-                # print(percepts_flatten[c])
-                # print(array[a])
-                # print(actions[a])
-                actions[a] = actions[a] + percepts_flatten[c] * array[a]
+                actions[a] = actions[a] + percepts_flatten[c] * array[a] #action valuing deciding on percepts
 
         for c in range(len(actions)):
-            actions[c] = actions[c] + self.bias[c]
+            actions[c] = actions[c] + self.bias[c] #bias added at the end
         return self.actions[np.argmax(actions)]
 
 def evalFitness(population):
