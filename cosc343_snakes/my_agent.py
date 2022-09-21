@@ -9,37 +9,33 @@ import copy as cp
 agentName = "SmartSnake"
 perceptFieldOfVision = 3   # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
-trainingSchedule = [("random", 10)]
+trainingSchedule = [("random", 200), ("self", 200)]
 # trainingSchedule = None
 
 # This is the class for your snake/agent
 class Snake:
 
-    # This is the init method which sets up a random new Snake. Each Snake is intially set with random values for its
+    # This is the init method which sets up a random new Snake. Each Snake is initially set with random values for its
     # chromosomes. After creation of the snakes the chromosomes are over written with parents chromosomes when applicable.
     # The structure of the chromosomes is an array as large as percepts and each chromosome is now a [3x1] inner array
-    # representing each action [left, straight, right]. Bias is also set and stored so can be passed on to children snakes.
+    # representing each possible action [left, straight, right]. Bias is also set and stored so can be passed on to children snakes.
     def __init__(self, nPercepts, actions):
         self.nPercepts = nPercepts
         self.actions = actions
         self.bias = np.random.uniform(-50 ,50, 3)
-        self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action [left, straight, right]
-        for c in range(self.nPercepts): #filling each value within each chromosome.
+        self.chromosome = [] #Individual chromosomes holding [x,x,x] values representing each action [left, straight, right]
+        for c in range(self.nPercepts): #filling all three values within each chromosome.
             # Found wide range of chromosomes makes better results
             self.chromosome.append(np.random.uniform(-50 ,50, 3)) #inner variable chromosome values for each action (left, straight, right).
 
-
+    #This method translates the 'percepts' to 'actions' by adjusting the magnitude and +/- of each possible item in percepts
+    # For food we keep this positive (as we want to move towards food) and increase its magnitude by 10. Same species and
+    # enemy species we make negative as we want to move away from these percepts and also increase their magnitudes by 10.
+    # We increase the magnitude if each percept in order to encourage the snake to objectives.
+    # 0 - move left
+    # 1 - move forward
+    # 2 - move right
     def AgentFunction(self, percepts):
-        # You should implement a model here that translates from 'percepts' to 'actions'
-        # through 'self.chromosome'.
-        #
-        # The 'actions' variable must be returned and it must be a 3-item list or 3-dim numpy vector
-        #
-        # The index of the largest numbers in the 'actions' vector/list is the action taken
-        # with the following interpretation:
-        # 0 - move left
-        # 1 - move forward
-        # 2 - move right
         actions = [0.0,0.0,0.0]
         percepts_flatten = percepts.flatten()
         for p in range(len(percepts_flatten)):
@@ -95,7 +91,8 @@ def evalFitness(population):
 
     return fitness
 
-
+# Method responsible for creating the next and improved generation of snakes
+# Implements roulette wheel selection with scaling elitism and k-point crossover. Has 1% chance of mutation per chromosome copy
 def newGeneration(old_population):
 
     # This function should return a tuple consisting of:
@@ -178,7 +175,7 @@ def newGeneration(old_population):
 
         #got parents now do cross over
 
-        for action_counter in range(3): #loop 2 for each action
+        for action_counter in range(3): #loop 3 for each action
             rand = random.uniform(0, 1.00)
             if rand < 0.5:  # take parent1 chromosome of specific action
                 for chromo_counter in range(len(child.chromosome)):
@@ -206,18 +203,6 @@ def newGeneration(old_population):
     return (new_population, avg_fitness)
 
 
-
-        # Here you should modify the new snakes chromosome by selecting two parents (based on their
-        # fitness) and crossing their chromosome to overwrite new_snake.chromosome
-
-        # Consider implementing elitism, mutation and various other
-        # strategies for producing a new creature.
-
-        #new_snake = Snake(nPercepts, actions)
-
-
-        # Add the new snake to the new population
-        #new_population.append(new_snake)
 
 
 

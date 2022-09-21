@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plot
 import numpy as np
 
 x = []
@@ -9,9 +9,16 @@ for line in open('avg_fitness.txt', 'r'):
     y.append(float(line))
     x.append(count)
 
-plt.title("Fitness per Game")
-plt.xlabel('training game')
-plt.ylabel("average fitness")
-plt.plot(x, y, marker='o', c='g')
+plot.title("Fitness per Training Game (Random 200, Self 200)")
+plot.xlabel('Training Game')
+plot.ylabel("Average Fitness")
 
-plt.show()
+#Individual points
+plot.plot(x, y, marker='o', c='b')
+x_value = [x[0], x[len(x)-1]]
+y_value = [y[0], y[len(y)-1]]
+plot.plot(x_value, y_value, linestyle="--", c='r')
+
+
+
+plot.show()
