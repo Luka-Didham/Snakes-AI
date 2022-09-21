@@ -21,9 +21,10 @@ class Snake:
         # values)
         self.nPercepts = nPercepts
         self.actions = actions
+        self.bias = np.random.uniform(-50 ,50, 3)
         self.chromosome = [] #list of chromosomes holding [x,x,x] values representing each action
         for c in range(self.nPercepts):
-            self.chromosome.append(np.random.uniform(-20 ,20, 6)) #inner variable chromosome values for each action (left, straight, right)
+            self.chromosome.append(np.random.uniform(-50 ,50, 3)) #inner variable chromosome values for each action (left, straight, right)
 
 
     def AgentFunction(self, percepts):
@@ -44,11 +45,11 @@ class Snake:
         percepts_flatten = percepts.flatten()
         for p in range(len(percepts_flatten)):
             if(percepts_flatten[p]==2):
-                percepts_flatten[p] = percepts_flatten[p] * 5
+                percepts_flatten[p] = percepts_flatten[p] * 10
             if (percepts_flatten[p] == 1):
-                percepts_flatten[p] = percepts_flatten[p] * -5
+                percepts_flatten[p] = percepts_flatten[p] * -10
             if (percepts_flatten[p] == -1):
-                percepts_flatten[p] = percepts_flatten[p] * 5
+                percepts_flatten[p] = percepts_flatten[p] * 10
         #
         # Different 'percepts' values should lead to different 'actions'.  This way the agent
         # reacts differently to different situations.
@@ -68,9 +69,10 @@ class Snake:
                 # print(percepts_flatten[c])
                 # print(array[a])
                 # print(actions[a])
-                actions[a%3] = actions[a%3] + percepts_flatten[c] * array[a] + random.uniform(-20, 20)
+                actions[a] = actions[a] + percepts_flatten[c] * array[a]
 
-
+        for c in range(len(actions)):
+            actions[c] = actions[c] + self.bias[c]
         return self.actions[np.argmax(actions)]
 
 def evalFitness(population):
@@ -180,28 +182,30 @@ def newGeneration(old_population):
 
         #got parents now do cross over
 
-        for action_counter in range(6): #loop 2 for each action
+        for action_counter in range(3): #loop 2 for each action
             rand = random.uniform(0, 1.00)
             if rand < 0.5:  # take parent1 chromosome of specific action
                 for chromo_counter in range(len(child.chromosome)):
                     rand_mut = random.uniform(0, 1.00)
                     child_chromo = child.chromosome[chromo_counter]
                     if rand_mut < 0.01:  # do random mutation
-                        child_chromo[action_counter] = random.uniform(-20, 20)
+                        child_chromo[action_counter] = random.uniform(-50, 50)
                     else:
                         p1_chromo = parent1.chromosome[chromo_counter]
                         child_chromo[action_counter] = p1_chromo[action_counter]
                         child.chromosome[chromo_counter] = child_chromo
+                child.bias[action_counter] = parent1.bias[action_counter]
             else:  # take parent2 chromosome of specific action
                 for chromo_counter in range(len(child.chromosome)):
                     rand_mut = random.uniform(0, 1.00)
                     child_chromo = child.chromosome[chromo_counter]
                     if rand_mut < 0.01:  # do random mutation
-                        child_chromo[action_counter] = random.uniform(-20, 20)
+                        child_chromo[action_counter] = random.uniform(-50, 50)
                     else:
                         p2_chromo = parent2.chromosome[chromo_counter]
                         child_chromo[action_counter] = p2_chromo[action_counter]
                         child.chromosome[chromo_counter] = child_chromo
+                child.bias[action_counter] = parent1.bias[action_counter]
         new_population.append(child)
     return (new_population, avg_fitness)
 
