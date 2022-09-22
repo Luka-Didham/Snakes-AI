@@ -9,7 +9,7 @@ for line in open('avg_fitness.txt', 'r'):
     y.append(float(line))
     x.append(count)
 
-plot.title("Fitness per Training Game (Random 200, Self 200)")
+plot.title("Fitness per Training Game (Random, nPercepts=9 3x3)")
 plot.xlabel('Training Game')
 plot.ylabel("Average Fitness")
 
@@ -17,7 +17,7 @@ plot.ylabel("Average Fitness")
 plot.plot(x, y, marker='o', c='b')
 x_value = [x[0], x[len(x)-1]]
 y_value = [y[0], y[len(y)-1]]
-plot.plot(x_value, y_value, linestyle="--", c='r')
+#plot.plot(x_value, y_value, linestyle="--", c='r')
 
 
 

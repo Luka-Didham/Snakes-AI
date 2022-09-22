@@ -9,7 +9,7 @@ import copy as cp
 agentName = "SmartSnake"
 perceptFieldOfVision = 3   # Choose either 3,5,7 or 9
 perceptFrames = 1          # Choose either 1,2,3 or 4
-trainingSchedule = [("random", 200), ("self", 200)]
+trainingSchedule = [("random", 10)]
 # trainingSchedule = None
 
 # This is the class for your snake/agent
@@ -109,15 +109,6 @@ def newGeneration(old_population):
     # At the end you need to compute the average fitness and return it along with your new population
     avg_fitness = np.mean(fitness)
     sum_fitness = np.sum(fitness)
-
-    #temp files to write TEMP
-    with open('avg_fitness.txt', 'a') as f:
-        f.write(str(avg_fitness))
-        f.write("\n")
-    # At this point you should sort the old_population snakes according to fitness, setting it up for parent
-    # selection.
-
-
 
     # Create new population list...
     new_population = list()
