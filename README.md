@@ -15,4 +15,4 @@ My implementation supports all precept ranges and game settings except for ”pe
 
 ### Usage
 Is automatically set to train for 50 games and then play 10 tournamnet games. Simply run,
-'python snakes.py' 
+`python snakes.py`
